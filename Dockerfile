@@ -32,7 +32,20 @@ RUN mkdir -p /py3venv
 # build dependencies
 RUN apt-get build-dep -qy pyside2
 
-RUN python3 -m venv /py3venv
-RUN . /py3venv/bin/activate && pip  install git+https://github.com/osrf/auto-abi-checker.git@tfoote-symlinks
+WORKDIR /tmp
+RUN git clone https://github.com/lvc/abi-compliance-checker.git
+WORKDIR /tmp/abi-compliance-checker
+RUN make && make install
 
-RUN . /py3venv/bin/activate && auto-abi.py --orig-type local-dir --orig /tmp/bootstrap/extracted --new-type local-dir --new /tmp/pyside_ppa/extracted
+RUN python3 -m venv /py3venv
+RUN echo revision 1
+RUN . /py3venv/bin/activate && pip install git+https://github.com/osrf/auto-abi-checker.git@tfoote-symlinks
+
+ENV COMPILATION_FLAGS='-I/usr/include/python2.7/ -I/tmp/ -DPYSIDE_EXPORTS -DQT_CORE_LIB -DQT_NETWORK_LIB -DQT_NO_DEBUG -DQT_QML_LIB -I/usr/include/x86_64-linux-gnu/qt5/QtHelp/ -DQT_NO_OPENGL -I/usr/include/x86_64-linux-gnu/qt5/QtNetwork/ -I/usr/include/x86_64-linux-gnu/qt5/QtScript -I/usr/include/x86_64-linux-gnu/qt5/QtScriptTools/ -I/usr/include/x86_64-linux-gnu/qt5/QtSql -I/usr/include/x86_64-linux-gnu/qt5/QtSvg -I/usr/include/x86_64-linux-gnu/qt5/QtTest -I/usr/include/x86_64-linux-gnu/qt5/QtXml -I/usr/include/x86_64-linux-gnu/qt5/QtXmlPatterns -I/usr/include/python2.7 -fPIC'
+
+WORKDIR /tmp
+RUN wget -q https://git.launchpad.net/ros-common/plain/PySide2/pysideqtesttouch.h?h=reproduction -O /tmp/pysideqtesttouch.h
+
+RUN . /py3venv/bin/activate && auto-abi.py --orig-type local-dir --orig /tmp/bootstrap/extracted --new-type local-dir --new /tmp/pyside_ppa/extracted || true
+
+
