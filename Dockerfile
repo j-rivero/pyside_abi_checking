@@ -27,4 +27,4 @@ RUN for p in $(ls *.deb); do dpkg -X $p extracted; done
 
 COPY compare_dirs.py /tmp
 
-RUN /tmp/compare_dirs.py /tmp/bootstrap/extracted /tmp/pyside_ppa/extracted
+CMD /tmp/compare_dirs.py /tmp/bootstrap/extracted /tmp/pyside_ppa/extracted
