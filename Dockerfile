@@ -20,7 +20,7 @@ RUN for p in $(ls *.deb); do dpkg -X $p extracted; done
 
 WORKDIR /tmp/pyside_ppa
 RUN add-apt-repository -s -u -y ppa:tully.foote/pyside2-reproduction
-RUN for p in $(apt-cache showsrc pyside2 | grep -v python3 | grep "arch=" | awk '{print $1}' | grep -v dbg); do apt-get download $p; done
+RUN for p in $(apt-cache showsrc pyside2 | grep -v python3 | grep "arch=" | awk '{print $1}' ); do apt-get download $p; done
 
 RUN for p in $(ls *.deb); do dpkg -X $p extracted; done
 
