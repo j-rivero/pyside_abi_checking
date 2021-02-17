@@ -46,6 +46,7 @@ ENV COMPILATION_FLAGS='-I/usr/include/python2.7/ -I/tmp/ -DPYSIDE_EXPORTS -DQT_C
 WORKDIR /tmp
 RUN wget -q https://git.launchpad.net/ros-common/plain/PySide2/pysideqtesttouch.h?h=reproduction -O /tmp/pysideqtesttouch.h
 
+# files broken in sources
+RUN find /tmp/bootstrap/extracted /tmp/pyside_ppa/extracted \( -name pyside2_qttest_python.h -o -name pyside2_global.h \) -exec rm {} \;
+
 RUN . /py3venv/bin/activate && auto-abi.py --orig-type local-dir --orig /tmp/bootstrap/extracted --new-type local-dir --new /tmp/pyside_ppa/extracted || true
-
-
