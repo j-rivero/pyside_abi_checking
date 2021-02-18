@@ -13,8 +13,8 @@ RUN apt-get update && apt-get install -qy\
 RUN mkdir -p /tmp/bootstrap/extracted /tmp/pyside_ppa/extracted
 
 WORKDIR /tmp/bootstrap
-RUN wget -q http://repositories.ros.org/ubuntu/building/dists/xenial/main/binary-amd64/Packages
-RUN for p in $(cat Packages | grep shiboken2 | grep pool | awk '{print $2}'); do wget -q http://repos.ros.org/repos/ros_bootstrap/$p; done
+RUN wget -q http://repositories.ros.org/ubuntu/main/dists/xenial/main/binary-amd64/Packages && \
+for p in $(cat Packages | grep shiboken2 | grep pool | grep -v python3 | grep -v dbg | awk '{print $2}'); do wget -q http://repositories.ros.org/ubuntu/main/$p; done
 
 RUN for p in $(ls *.deb); do dpkg -X $p extracted; done
 
